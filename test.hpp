@@ -23,7 +23,7 @@ typedef int DataType;
 //2.二分查找:在长度为n的数组arr中查找val值的下标,未找到返回-1
 //3.模拟双端栈(节省空间)、循环队列
 //4.反转顺序表的前x位和后n-x位,或反转整个顺序表
-//5.删除重复元素
+//5.删除有序表中的重复元素，并返回最后数组的长度
 
 
 //1.排序算法
@@ -100,7 +100,36 @@ int PushDoubleStack(DoubleStack *stack,DataType data,DataType LoR){  //LoR指示插
 // }
 
 //4.反转顺序表的前x位和后n-x位,或反转整个顺序表
-//5.删除重复元素
+void reverseI2J(DataType*arr,int i,int j){  //反转顺序表的第i-j位元素,j是最右边元素的下标
+    int L = i,R = j;
+    while(L<R){ //互换i和j位置的元素即可
+        DataType tmp = arr[L];
+        arr[L++] = arr[R];
+        arr[R--] = tmp;
+    }
+}
+void reverseHeadX(DataType*arr,int n,int x,int mode){
+    //其中mode = 1:反转前x位，mode = 2:反转前x位和后n-x位，mode = 3:反转整个顺序表
+    //1.反转前x位
+    reverseI2J(arr,0,x-1);
+    if(mode == 1)return;
+    //2.反转后n-x位
+    reverseI2J(arr,x,n-1);
+    if(mode == 2)return ;
+    //3.反转整个顺序表
+    reverseI2J(arr,0,n-1);
+}
+
+//5.删除有序表中的重复元素，并返回最后数组的长度
+int delDuplication(DataType*arr,int n){
+    int i = 0,j = 1;    //i+1做最后的返回值，j代表当前待比较的最左边的元素
+    for(;i < n;i++){
+        while(arr[i] == arr[j])j++;//跳过重复元素
+        arr[++i] = arr[j++];
+    }
+    return i+1;     //新数组的长度
+}
+
 
 //-----------------------------2.链表√√---------------------------------------------
 typedef struct linknode{    //单链表
@@ -391,7 +420,7 @@ LinkNode* partition(LinkList*head,int val){
     return head;            //因为涉及到"换头"操作,所以要返回大于区的头结点作为新的头结点
 }
 
-//8.单链表涉及循环队列 - 思路:使用循环单链表来做,为简单插入删除操作,只使用尾指针
+//8.单链表设计循环队列 - 思路:使用循环单链表来做,为简单插入删除操作,只使用尾指针
 //先设计数据结点及结构体
 typedef struct queueNode{   //数据结点
     DataType data;          //数据域
@@ -646,7 +675,7 @@ typedef struct binarytreenode{  //二叉树结构体
 //10.找值为val的第一个结点
 //11.统计二叉树结点个数
 
-//写一个构造二叉树的测试算法-用于测试后边的其他算法
+//写一个构造二叉树的测试算法-用于测试后边的其他算法 - 将按层序给的数组arr转换成二叉树返回
 BTree* CreateBTree(int*arr,int n){  //没有结点的位置值为-1
     if(!arr || !n)return NULL;    //空数组返回NULL
     BTNode*root = (BTNode*)malloc(sizeof(BTNode));
